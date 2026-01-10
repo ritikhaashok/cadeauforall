@@ -27,13 +27,17 @@ export async function POST(req) {
       cartId = newCart.id;
     }
 
-    // insert item
+    // insert item (persist selected options)
     const { error } = await supabase.from('cart_items').insert({
       cart_id: cartId,
       product_id: body.productId,
       quantity: body.quantity || 1,
       price: body.price || 0,
       custom_text: body.customText || null,
+      size_id: body.size_id || null,
+      size_text: body.size_text || null,
+      color_id: body.color_id || null,
+      color_text: body.color_text || null,
     });
 
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 });

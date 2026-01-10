@@ -4,6 +4,11 @@ import ProductCustomizer from './ProductCustomizer';
 export default function ProductDetail({ product }) {
   const image = product.image || null;
 
+  const prices = (product.sizes || []).map(s => Number(s.price));
+  const minPrice = prices.length ? Math.min(...prices) : Number(product.price || 0);
+  const maxPrice = prices.length ? Math.max(...prices) : minPrice;
+  const priceRange = minPrice === maxPrice ? `$${minPrice.toFixed(2)}` : `$${minPrice.toFixed(2)}–$${maxPrice.toFixed(2)}`;
+
   return (
     <div className="max-w-6xl mx-auto py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -29,13 +34,13 @@ export default function ProductDetail({ product }) {
 
         <div>
           <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>
-          <div className="text-xl text-sage font-semibold mb-4">${parseFloat(product.price).toFixed(2)}</div>
+          <div className="text-xl text-sage font-semibold mb-4">{priceRange}</div>
 
           <div className="prose max-w-none text-gray-700 mb-6">
             {product.description || 'No description provided.'}
           </div>
 
-          <ProductCustomizer productId={product.id} price={product.price} />
+          <ProductCustomizer productId={product.id} productName={product.name} productImage={product.image} initialPrice={minPrice} sizes={product.sizes} colors={product.colors} />
         </div>
       </div>
     </div>

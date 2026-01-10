@@ -85,6 +85,34 @@ export async function POST(request) {
     existing.push(entry);
     await fs.promises.writeFile(submissionsPath, JSON.stringify(existing, null, 2));
 
+    // Send email notification to site owner if configured
+    try {
+      const { sendContactEmail } = await import('@/lib/mail');
+
+      const recipient = process.env.CONTACT_RECIPIENT_EMAIL;
+      if (recipient) {
+        const subject = `New contact submission - ${new Date().toLocaleString()}`;
+        const text = `Phone: ${entry.phone}\nDescription: ${entry.description}\nImage: ${entry.image || 'none'}\nReceived: ${entry.created_at}`;
+        const html = `<p><strong>Phone:</strong> ${entry.phone}</p><p><strong>Description:</strong> ${entry.description || '(none)'}</p><p><strong>Image:</strong> ${entry.image ? `<a href="${entry.image}">${entry.image}</a>` : 'none'}</p><p><small>Received: ${entry.created_at}</small></p>`;
+
+        // if we have a local file (starts with /uploads/) attach it
+        const attachments = [];
+        if (entry.image && entry.image.startsWith('/uploads/')) {
+          try {
+            const filePath = path.join(process.cwd(), 'public', entry.image.replace(/^\//, ''));
+            const buffer = await fs.promises.readFile(filePath);
+            attachments.push({ filename: path.basename(filePath), content: buffer, contentType: 'image/*' });
+          } catch (e) {
+            // ignore file read errors
+          }
+        }
+
+        await sendContactEmail({ to: recipient, subject, text, html, attachments });
+      }
+    } catch (mailErr) {
+      console.warn('Error sending contact notification email:', mailErr);
+    }
+
     return NextResponse.json({ success: true, entry, imageUrl });
   } catch (err) {
     console.error("/api/contact/submit error:", err);
