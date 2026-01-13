@@ -7,6 +7,7 @@
 //     </main>
 //   )
 // }
+import CategoryBar from '@/components/CategoryBar';
 import HeroSectionHome from '@/components/home/HeroSectionHome';
 import FeaturedCategoriesHome from '@/components/home/FeaturedCategoriesHome';
 import NewArrivalsHome from '@/components/home/NewArrivalsHome';
@@ -18,6 +19,8 @@ export default function Home() {
   return (
     <>
       <main className="px-6 py-12">
+        <CategoryBar />
+
         <HeroSectionHome />
 
         <FeaturedCategoriesHome />

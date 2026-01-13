@@ -8,6 +8,10 @@ export default function ProductCustomizer({ productId, productName, productImage
   const [quantity, setQuantity] = useState(1);
   const [saving, setSaving] = useState(false);
 
+  // uploaded image (optional)
+  const [productImageFile, setProductImageFile] = useState(null);
+  const [productImagePreview, setProductImagePreview] = useState(null);
+
   // option selections
   const [selectedSizeId, setSelectedSizeId] = useState(sizes?.[0]?.id ?? null);
   const [selectedColorId, setSelectedColorId] = useState(colors?.[0]?.id ?? null);
@@ -37,6 +41,15 @@ export default function ProductCustomizer({ productId, productName, productImage
     return data?.session?.access_token || null;
   }
 
+  function handleFileChange(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setProductImageFile(file);
+    const reader = new FileReader();
+    reader.onload = () => setProductImagePreview(reader.result);
+    reader.readAsDataURL(file);
+  }
+
   async function addToServerCart() {
     setSaving(true);
     try {
@@ -59,13 +72,42 @@ export default function ProductCustomizer({ productId, productName, productImage
           size_text: sizeObj?.size || null,
           color_id: colorObj?.id || null,
           color_text: colorObj?.name || null,
+          // include uploaded image as data URL (optional)
+          image: productImagePreview || null,
         }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Add failed');
 
+      // Also add to local cart so the UI reflects the newly added item (including uploaded image preview)
+      try {
+        const existing = JSON.parse(localStorage.getItem('cart') || '[]');
+        const sizeObj = sizes?.find((s) => s.id === selectedSizeId) || null;
+        const colorObj = colors?.find((c) => c.id === selectedColorId) || null;
+        const item = {
+          productId,
+          productName: productName || null,
+          productImage: productImagePreview || productImage || null,
+          customText,
+          quantity: Number(quantity),
+          price: Number(displayPrice),
+          size_id: sizeObj?.id || null,
+          size_text: sizeObj?.size || null,
+          color_id: colorObj?.id || null,
+          color_text: colorObj?.name || null,
+        };
+        existing.push(item);
+        localStorage.setItem('cart', JSON.stringify(existing));
+        window.dispatchEvent(new CustomEvent('cart-updated'));
+      } catch (e) {
+        // ignore local storage errors
+      }
+
       alert('Added to your cart.');
+      // reset preview/file
+      setProductImageFile(null);
+      setProductImagePreview(null);
     } catch (err) {
       console.error(err);
       alert('Could not add to cart: ' + err.message);
@@ -99,6 +141,10 @@ export default function ProductCustomizer({ productId, productName, productImage
       window.dispatchEvent(new CustomEvent('cart-updated'));
       // simple feedback
       alert('Added to cart.');
+
+      // reset upload (optional)
+      setProductImageFile(null);
+      setProductImagePreview(null);
     } catch (err) {
       console.error(err);
       alert('Could not add to cart. See console.');
@@ -109,14 +155,27 @@ export default function ProductCustomizer({ productId, productName, productImage
 
   return (
     <div className="mt-6">
-      <label className="block text-sm font-medium mb-1">Customization</label>
+      <label className="block text-sm font-medium mb-1">Personalization</label>
       <input
         type="text"
         value={customText}
         onChange={(e) => setCustomText(e.target.value)}
-        placeholder="Enter text to engrave or print"
+        placeholder="enter text here"
         className="w-full border rounded px-3 py-2 text-sm mb-3"
       />
+
+      <div className="mb-3">
+        <label className="block text-sm font-medium mb-1">Image (optional)</label>
+        <input accept="image/*" type="file" onChange={handleFileChange} />
+        {productImagePreview && (
+          <div className="mt-2">
+            <img src={productImagePreview} alt="preview" className="max-h-40 object-contain border rounded" />
+            <div>
+              <button type="button" onClick={() => { setProductImageFile(null); setProductImagePreview(null); }} className="text-sm text-red-600 mt-2">Remove image</button>
+            </div>
+          </div>
+        )}
+      </div>
 
       {sizes && sizes.length > 0 && (
         <div className="mb-3">

@@ -3,23 +3,12 @@
 import { useState } from "react";
 
 export default function ContactModal({ open, onClose }) {
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
   const [description, setDescription] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
   if (!open) return null;
-
-  function handleFileChange(e) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onload = () => setImagePreview(reader.result);
-    reader.readAsDataURL(file);
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -31,14 +20,10 @@ export default function ContactModal({ open, onClose }) {
 
     setLoading(true);
     try {
-      const fd = new FormData();
-      if (imageFile) fd.append("image", imageFile);
-      fd.append("description", description || "");
-      fd.append("phone", phone.trim());
-
       const res = await fetch("/api/contact/submit", {
         method: "POST",
-        body: fd,
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ phone: phone.trim(), description: description || "" }),
       });
 
       const data = await res.json();
@@ -46,8 +31,6 @@ export default function ContactModal({ open, onClose }) {
 
       setMessage({ type: "success", text: "Thanks! We received your request and will reach out soon." });
       // Reset form
-      setImageFile(null);
-      setImagePreview(null);
       setDescription("");
       setPhone("");
     } catch (err) {
@@ -66,21 +49,13 @@ export default function ContactModal({ open, onClose }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Image (optional)</label>
-            <input accept="image/*" type="file" onChange={handleFileChange} />
-            {imagePreview && (
-              <img src={imagePreview} alt="preview" className="mt-3 max-h-40 object-contain border rounded" />
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Short description (optional)</label>
+            <label className="block text-sm font-medium mb-1">Message</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full border rounded p-2 text-sm"
-              rows={3}
-              placeholder="Tell us what you'd like made (materials, colors, size)..."
+              rows={4}
+              placeholder="Ask your question here..."
             />
           </div>
 

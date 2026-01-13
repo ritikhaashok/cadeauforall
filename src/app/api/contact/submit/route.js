@@ -5,51 +5,16 @@ import { supabase } from "@/lib/supabaseClient";
 
 export async function POST(request) {
   try {
-    const formData = await request.formData();
-    const phone = formData.get("phone");
-    const description = formData.get("description") || "";
-    const file = formData.get("image");
+    const body = await request.json();
+    const phone = body?.phone;
+    const description = body?.description || "";
 
     if (!phone || !String(phone).trim()) {
       return NextResponse.json({ error: "Phone number is required" }, { status: 400 });
     }
 
-    let imageUrl = null;
-
-    if (file && file.size) {
-      const originalName = file.name || `upload-${Date.now()}`;
-      const safeName = `${Date.now()}-${originalName.replace(/[^a-zA-Z0-9_.-]/g, "-")}`;
-
-      // Try uploading to Supabase storage first (preferred)
-      try {
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("contact-uploads")
-          .upload(safeName, buffer, { contentType: file.type });
-
-        if (uploadError) {
-          console.warn("Supabase storage upload error:", uploadError.message || uploadError);
-        } else if (uploadData) {
-          const { data: pub } = supabase.storage.from("contact-uploads").getPublicUrl(safeName);
-          imageUrl = pub?.publicUrl || null;
-        }
-      } catch (supErr) {
-        console.warn("Supabase storage upload exception:", supErr);
-      }
-
-      // Fallback to saving locally if Supabase upload failed
-      if (!imageUrl) {
-        const uploadsDir = path.join(process.cwd(), "public", "uploads");
-        await fs.promises.mkdir(uploadsDir, { recursive: true });
-        const filePath = path.join(uploadsDir, safeName);
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-        await fs.promises.writeFile(filePath, buffer);
-        imageUrl = `/uploads/${safeName}`;
-      }
-    }
+    // No image handling for contact submissions - keep contact form text-only
+    const imageUrl = null;
 
     // Insert into Supabase table `contact_submissions` when available
     try {
@@ -92,22 +57,10 @@ export async function POST(request) {
       const recipient = process.env.CONTACT_RECIPIENT_EMAIL;
       if (recipient) {
         const subject = `New contact submission - ${new Date().toLocaleString()}`;
-        const text = `Phone: ${entry.phone}\nDescription: ${entry.description}\nImage: ${entry.image || 'none'}\nReceived: ${entry.created_at}`;
-        const html = `<p><strong>Phone:</strong> ${entry.phone}</p><p><strong>Description:</strong> ${entry.description || '(none)'}</p><p><strong>Image:</strong> ${entry.image ? `<a href="${entry.image}">${entry.image}</a>` : 'none'}</p><p><small>Received: ${entry.created_at}</small></p>`;
+        const text = `Phone: ${entry.phone}\nDescription: ${entry.description}\nReceived: ${entry.created_at}`;
+        const html = `<p><strong>Phone:</strong> ${entry.phone}</p><p><strong>Description:</strong> ${entry.description || '(none)'}</p><p><small>Received: ${entry.created_at}</small></p>`;
 
-        // if we have a local file (starts with /uploads/) attach it
-        const attachments = [];
-        if (entry.image && entry.image.startsWith('/uploads/')) {
-          try {
-            const filePath = path.join(process.cwd(), 'public', entry.image.replace(/^\//, ''));
-            const buffer = await fs.promises.readFile(filePath);
-            attachments.push({ filename: path.basename(filePath), content: buffer, contentType: 'image/*' });
-          } catch (e) {
-            // ignore file read errors
-          }
-        }
-
-        await sendContactEmail({ to: recipient, subject, text, html, attachments });
+        await sendContactEmail({ to: recipient, subject, text, html, attachments: [] });
       }
     } catch (mailErr) {
       console.warn('Error sending contact notification email:', mailErr);

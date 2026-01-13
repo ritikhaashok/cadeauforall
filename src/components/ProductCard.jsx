@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default function ProductCard({ product = {} }) {
-  const { id, name = 'Product name', price = '$0.00', image, badge } = product;
+  const { id, name = 'Product name', price = '$0.00', image, badge, category } = product;
 
   return (
     <article className="bg-white rounded-xl shadow-sm p-4 flex flex-col" aria-labelledby={`product-${id}`}>
@@ -20,7 +20,13 @@ export default function ProductCard({ product = {} }) {
         </div>
       </Link>
 
-      <h3 id={`product-${id}`} className="text-sm md:text-base font-medium mb-1">{name}</h3>
+      <div className="flex items-center justify-between mb-1">
+        <h3 id={`product-${id}`} className="text-sm md:text-base font-medium">{name}</h3>
+        {category && (
+          <Link href={`/shop?categories=${encodeURIComponent(category)}`} className="text-xs text-gray-500 hover:text-sage ml-2">{category.replace(/-/g, ' ')}</Link>
+        )}
+      </div>
+
       <p className="text-sm text-sage font-semibold mb-3">{price}</p>
 
       <div className="mt-auto">

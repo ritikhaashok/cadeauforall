@@ -39,7 +39,7 @@ export default function Navbar() {
             <span className="text-sage font-semibold">Cadeau4All</span>
           </a>
 
-          <button onClick={() => setShowContact(true)} className="text-sm text-gray-600 hover:text-gray-800">Contact</button>
+          <button onClick={() => setShowContact(true)} className="text-sm text-gray-600 hover:text-gray-800">Questions?</button>
         </div>
 
         <div className="flex items-center gap-3 text-gray-600">

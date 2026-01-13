@@ -38,6 +38,7 @@ export async function POST(req) {
       size_text: body.size_text || null,
       color_id: body.color_id || null,
       color_text: body.color_text || null,
+      image_url: body.image || null,
     });
 
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 });
