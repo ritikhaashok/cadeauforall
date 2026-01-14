@@ -1,21 +1,30 @@
 @import "tailwindcss";
 
 :root {
+  /* Color palette */
   --background: #faf9f7;
   --foreground: #2e2e2e;
-/* 
-  --sage: #8f9f8c;
-  --sage-dark: #6f7f6c;
-  --beige: #e9e5dc; */
 
   --sage: #8a9b8f;
   --sage-dark: #6f7f6c;
   --beige: #f4efe9;
   --off-white: #fafafa;
   --charcoal: #2f2f2f;
+
+  /* Design tokens */
+  --radius: 10px; /* moderate rounding */
+  --card-radius: 8px;
+  --card-shadow: 0 6px 18px rgba(30,30,30,0.06);
+  --card-hover-shadow: 0 12px 30px rgba(30,30,30,0.08);
+  --transition-fast: 200ms;
+  --container-width: 1200px;
+
+  /* Typography */
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
-@theme inline {
+/* Theme aliases */
+:root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
@@ -24,7 +33,83 @@
   --color-beige: var(--beige);
 }
 
+html, body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
+  line-height: 1.4;
 }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius);
+  transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease, opacity var(--transition-fast) ease;
+  cursor: pointer;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn-sage {
+  background: var(--sage);
+  color: white;
+  box-shadow: 0 6px 18px rgba(138,155,143,0.12);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  color: var(--charcoal);
+}
+
+.btn:disabled { opacity: 0.6; cursor: default; }
+
+/* Card */
+.card {
+  background: white;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  transition: transform var(--transition-fast) ease, box-shadow var(--transition-fast) ease;
+  overflow: hidden;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--card-hover-shadow);
+}
+
+.card-image {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  overflow: hidden;
+}
+
+.card-title { font-weight: 600; }
+.card-price { color: var(--sage); font-weight: 600; }
+
+/* Category pill */
+.pill {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  background: rgba(0,0,0,0.03);
+}
+
+/* Utility */
+.max-container { max-width: var(--container-width); margin-left: auto; margin-right: auto; }
+
+/* Small visual refinements */
+.navbar { background: white; }
+
+/* Make images slightly rounded inside cards */
+.card .object-cover { border-radius: calc(var(--card-radius) - 2px); }
+

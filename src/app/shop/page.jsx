@@ -1,18 +1,19 @@
 import ProductCard from "@/components/ProductCard";
 import FilterSidebar from "@/components/shop/FilterSidebar";
+import CategoryBar from '@/components/CategoryBar';
 import { supabase } from '@/lib/supabaseClient';
 
-const fallbackProducts = [
-  { id: 1, name: "Geometric Ceramic Planter (small)", price: "$34.99", category: 'indoor-planters' },
-  { id: 2, name: "Glazed Indoor Plant Pot", price: "$29.99", category: 'indoor-planters' },
-  { id: 3, name: "Hand-Painted Ceramic Face", price: "$55.00", category: 'indoor-planters' },
-];
+// const fallbackProducts = [
+//   { id: 1, name: "Geometric Ceramic Planter (small)", price: "$34.99", category: 'indoor-planters' },
+//   { id: 2, name: "Glazed Indoor Plant Pot", price: "$29.99", category: 'indoor-planters' },
+//   { id: 3, name: "Hand-Painted Ceramic Face", price: "$55.00", category: 'indoor-planters' },
+// ];
 
 async function getProducts(categories = [], minPrice = null, maxPrice = null) {
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
     // Env vars not set — return fallback local products so dev doesn't crash
     // Apply category and price filtering to fallback products
-    let list = fallbackProducts.slice();
+//    let list = fallbackProducts.slice();
     if (Array.isArray(categories) && categories.length) list = list.filter(p => categories.includes(p.category));
     if (minPrice !== null && minPrice !== '') list = list.filter(p => parseFloat(String(p.price).replace(/[^0-9.]/g, '')) >= Number(minPrice));
     if (maxPrice !== null && maxPrice !== '') list = list.filter(p => parseFloat(String(p.price).replace(/[^0-9.]/g, '')) <= Number(maxPrice));
@@ -34,7 +35,7 @@ async function getProducts(categories = [], minPrice = null, maxPrice = null) {
 
   if (error) {
     console.error('Supabase error', error);
-    return fallbackProducts;
+//    return fallbackProducts;
   }
 
   // Map to include a top-level `image` property using the first image if available

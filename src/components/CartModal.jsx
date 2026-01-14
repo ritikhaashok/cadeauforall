@@ -116,7 +116,7 @@ export default function CartModal({ open, onClose }) {
             </div>
 
             <div className="flex gap-2 mt-3">
-              <button onClick={() => setShowOrderForm(true)} className="bg-sage text-white px-4 py-2 rounded">Send to Order</button>
+              <button onClick={() => setShowOrderForm(true)} className="bg-[var(--sage)] text-white px-4 py-2 rounded">Send to Order</button>
               <button onClick={() => { localStorage.removeItem('cart'); save([]); }} className="px-4 py-2 rounded border">Clear</button>
             </div>
 

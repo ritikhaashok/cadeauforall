@@ -26,23 +26,25 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="w-full bg-white border-b border-gray-100">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-[var(--sage)] border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <a href="/" className="flex items-center gap-3">
-            <span className="inline-flex items-center justify-center bg-sage text-sage rounded-full w-8 h-8">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden>
-                <path d="M20 8h-2.18A3 3 0 0 0 16 6a3 3 0 0 0-5.83-.64A3.5 3.5 0 0 0 5 8H3a1 1 0 0 0-1 1v3a3 3 0 0 0 3 3h16a3 3 0 0 0 3-3V9a1 1 0 0 0-1-1zM6 12v-1h12v1H6z" />
-              </svg>
+            <span className="inline-flex items-center justify-center bg-sage rounded-full w-8 h-8 overflow-hidden">
+              <img
+                src="/Logo2.png"
+                alt="Logo"
+                className="w-8 h-8 object-contain"
+              />
             </span>
 
-            <span className="text-sage font-semibold">Cadeau4All</span>
+            <span className="text-white font-semibold">Cadeau4All</span>
           </a>
 
-          <button onClick={() => setShowContact(true)} className="text-sm text-gray-600 hover:text-gray-800">Questions?</button>
+          <button onClick={() => setShowContact(true)} className="text-sm text-white">Questions?</button>
         </div>
 
-        <div className="flex items-center gap-3 text-gray-600">
+        <div className="flex items-center gap-3 text-white">
           <button aria-label="Cart" className="relative p-2 rounded-md hover:bg-gray-50" onClick={() => setShowCart(true)}>
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="9" cy="21" r="1" />

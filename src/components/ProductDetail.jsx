@@ -1,3 +1,5 @@
+"use client";
+
 import Image from 'next/image';
 import ProductCustomizer from './ProductCustomizer';
 
@@ -41,6 +43,14 @@ export default function ProductDetail({ product }) {
           </div>
 
           <ProductCustomizer productId={product.id} productName={product.name} productImage={product.image} initialPrice={minPrice} sizes={product.sizes} colors={product.colors} />
+            <div className="mt-6">
+              {/* <button
+                className="btn btn-sage px-6 py-2 rounded shadow"
+                onClick={() => console.log(`Add product ${product.id} to cart`)}
+              >
+                Add to Cart
+              </button> */}
+            </div>
         </div>
       </div>
     </div>

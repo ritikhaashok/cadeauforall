@@ -18,20 +18,20 @@ import Footer from '@/components/Footer';
 export default function Home() {
   return (
     <>
-      <main className="px-6 py-12">
+      <main className="px-0">
         <CategoryBar />
 
         <HeroSectionHome />
 
-        <FeaturedCategoriesHome />
+        {/* <FeaturedCategoriesHome /> */}
 
         <NewArrivalsHome />
 
         <OurPromiseHome />
 
         <TestimonialsHome />
-
-        <Footer />
+{/* 
+        <Footer /> */}
       </main>
     </>
   );

@@ -5,13 +5,13 @@ export default function ProductCard({ product = {} }) {
   const { id, name = 'Product name', price = '$0.00', image, badge, category } = product;
 
   return (
-    <article className="bg-white rounded-xl shadow-sm p-4 flex flex-col" aria-labelledby={`product-${id}`}>
-      <Link href={product.href || `/product/${id}`} className="block mb-4 relative">
+    <article className="card p-4 flex flex-col" aria-labelledby={`product-${id}`}>
+      <Link href={product.href || `/product/${id}`} className="block mb-4 relative card-image">
         {badge && (
           <div className="absolute left-3 top-3 bg-sage text-sage text-xs font-semibold px-2 py-1 rounded-full shadow">{badge}</div>
         )}
 
-        <div className="aspect-square bg-[var(--beige)] rounded-lg mb-2 overflow-hidden flex items-center justify-center">
+        <div className="aspect-square bg-[var(--beige)] mb-2 overflow-hidden flex items-center justify-center">
           {image ? (
             <Image src={image} alt={name} width={400} height={400} className="object-cover w-full h-full" />
           ) : (
@@ -21,16 +21,16 @@ export default function ProductCard({ product = {} }) {
       </Link>
 
       <div className="flex items-center justify-between mb-1">
-        <h3 id={`product-${id}`} className="text-sm md:text-base font-medium">{name}</h3>
+        <h3 id={`product-${id}`} className="card-title text-sm md:text-base">{name}</h3>
         {category && (
-          <Link href={`/shop?categories=${encodeURIComponent(category)}`} className="text-xs text-gray-500 hover:text-sage ml-2">{category.replace(/-/g, ' ')}</Link>
+          <div className="pill ml-2">{category.replace(/-/g, ' ')}</div>
         )}
       </div>
 
-      <p className="text-sm text-sage font-semibold mb-3">{price}</p>
+      <p className="card-price text-sm mb-3">{price}</p>
 
       <div className="mt-auto">
-        <button className="w-full bg-sage text-white text-sm py-2 rounded-full hover:bg-sage">Add to Cart</button>
+        <button className="btn btn-sage">Add to Cart</button>
       </div>
     </article>
   );

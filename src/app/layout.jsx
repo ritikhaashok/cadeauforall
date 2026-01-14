@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from '@/components/Navbar';
+import CategoryBar from "@/components/CategoryBar";
 import Footer from '@/components/Footer';
 
 export const metadata = {
@@ -13,7 +14,7 @@ export default function RootLayout({ children }) {
       <body className="bg-[var(--off-white)] text-[var(--charcoal)]">
         <Navbar />
 
-        <main className="min-h-screen">{children}</main>
+        <main className="min-h-screen pt-16">{children}</main>
 
         <Footer />
       </body>

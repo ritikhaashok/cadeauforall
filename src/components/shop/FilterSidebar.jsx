@@ -85,7 +85,7 @@ export default function FilterSidebar({ selectedCategories = [], initialMin = ''
           </div>
 
           <div className="flex items-center gap-2">
-            <button onClick={applyPrice} className="px-3 py-1 bg-sage text-white rounded text-sm">Apply</button>
+            <button onClick={applyPrice} className="px-3 py-1 bg-[var(--sage)] text-white rounded text-sm">Apply</button>
             <button onClick={clearPrice} className="px-3 py-1 border rounded text-sm">Clear</button>
           </div>
         </div>

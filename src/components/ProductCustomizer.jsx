@@ -211,7 +211,7 @@ export default function ProductCustomizer({ productId, productName, productImage
       </div>
 
       <div className="flex gap-3">
-        <button className="bg-sage text-white px-4 py-2 rounded" onClick={addToLocalCart} disabled={saving}>
+        <button className="bg-[var(--sage)] text-white px-4 py-2 rounded" onClick={addToLocalCart} disabled={saving}>
           {saving ? 'Adding…' : 'Add to Cart'}
         </button>
       </div>
