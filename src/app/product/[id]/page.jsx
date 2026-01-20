@@ -6,7 +6,7 @@ export default async function ProductPage({ params }) {
 
   const { data, error } = await supabase
     .from('products')
-    .select('id, name, slug, description, price, currency, product_images(url, alt, position)')
+    .select('id, name, slug, description, price, currency, product_images(url)')
     .eq('id', id)
     .maybeSingle();
 
